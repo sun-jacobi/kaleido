@@ -39,7 +39,7 @@ static int gettok() {
         do {
             Numstr += LastChar;
             LastChar = getchar();
-        } while (isdigit(LastChar) || LastChar == ".");
+        } while (isdigit(LastChar) || LastChar == '.');
         NumVal = strtod(Numstr.c_str(), 0);
         return tok_num;
     }

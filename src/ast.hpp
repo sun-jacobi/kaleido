@@ -2,8 +2,7 @@
 #include <vector>
 #include <memory>
 
-
-namespace Kaleidoscope {
+namespace Kaleidoscope{
 class ExprAST {
 public :
     ExprAST() = default;
