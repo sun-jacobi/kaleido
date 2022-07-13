@@ -1,38 +1,81 @@
-#include <memory>
-#include <stdio.h>
+#include <cstdio>
+#include <vector>
+#include "parser.hpp"
 #include "lexer.cpp"
 #include "ast.hpp"
 
 
 namespace  Kaleidoscope {
 
-class Parser {
-public:
-    static int CurTok;
-
-    static int getNextToken() {
+    int Parser::getNextToken() {
         return gettok();
     }
     //---------------------------------------------------------
-    static std::unique_ptr<ExprAST> LogError(const char *Str) {
+    std::unique_ptr<ExprAST> Parser::LogError(const char *Str) {
         fprintf(stderr, "LogError: %s\n", Str);
         return nullptr;
     }
-    static std::unique_ptr<PrototypeAST> LogErrorP(const char *Str) {
+    std::unique_ptr<PrototypeAST> Parser::LogErrorP(const char *Str) {
         LogError(Str);
         return nullptr;
     }
     //---------------------------------------------------------
-    static std::unique_ptr<ExprAST> ParseExpr(); // TODO
+    int Parser::GetTokPrec() {
+        if (!isascii(CurTok)) {
+            return -1;
+        }
+        int TokPrec = BinopPrec[CurTok];
+        if (TokPrec <= 0) {
+            return -1;
+        }
+        return TokPrec;
+    }
+    void Parser::SetTokPrec() {
+        BinopPrec['<'] = 10;
+        BinopPrec['+'] = 20;
+        BinopPrec['-'] = 20;
+        BinopPrec['*'] = 40;
+        BinopPrec['%'] = 40;
+        BinopPrec['/'] = 40; 
+    }
+    //---------------------------------------------------------
+    std::unique_ptr<ExprAST> Parser::ParseExpr() {
+        auto LHS = ParsePrimary();
+        if (!LHS) {
+            return nullptr;
+        }
+        return ParseBinOpRHS(0, std::move(LHS));
+    }
     
-    static std::unique_ptr<ExprAST> ParseNumberExpr() {
+    std::unique_ptr<ExprAST> Parser::ParsePrimary() {
+        switch (CurTok) {
+            case tok_id: 
+                return ParseIdentifierExpr();
+            case tok_num:
+                return ParseNumberExpr();
+            case '(': 
+                return ParseParenExpr();
+            default:
+                return LogError("unknown token when expecting an expression");
+        }
+    }
+    std::unique_ptr<ExprAST> Parser::ParseBinOpRHS(int ExprPrec, 
+                            std::unique_ptr<ExprAST> LHS) {
+        while(1) {
+            int TokPrec = GetTokPrec();
+            if (TokPrec < ExprPrec) {
+            return LHS;
+            }
+        }    
+    }
+    //---------------------------------------------------------
+    std::unique_ptr<ExprAST> Parser::ParseNumberExpr() {
         auto Result = std::make_unique<NumExprAST>(NumVal);
         getNextToken();
         return std::move(Result);
     }
     
-
-    static std::unique_ptr<ExprAST> ParseParenExpr() {
+    std::unique_ptr<ExprAST> Parser::ParseParenExpr() {
         getNextToken(); // ignore the '('  
         auto V = ParseExpr();
         if (!V) {
@@ -44,17 +87,35 @@ public:
         getNextToken();
         return V;
     }
-    
-    static std::unique_ptr<ExprAST> ParseIdentifierExpr() {
+
+    std::unique_ptr<ExprAST> Parser::ParseIdentifierExpr() {
         std::string id = IdentifierStr;
         getNextToken();
         if (CurTok != '(') {
             return std::make_unique<VarExprAST>(id);
         }
-        // TODO : implement the function call 
+        // Call 
+        getNextToken();
+        std::vector<std::unique_ptr<ExprAST>> Args;
+        if (CurTok != ')') {
+            while(1) {
+                if (auto Arg = ParseExpr()) {
+                    Args.push_back(std::move(Arg));
+                } else {
+                    return nullptr;
+                }
+                if (CurTok == ')') {
+                    break;
+                } 
+                if (CurTok != ',') {
+                    return LogError("Expected ')' or ',' in args list");
+                }
+                getNextToken();
+            }      
+        }
+        getNextToken();
+        return std::make_unique<CallExprAST>(id,std::move(Args));
     }
-};
-
 
 } // namespace Kaleidoscope
 
