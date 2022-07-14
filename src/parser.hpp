@@ -4,6 +4,7 @@
 
 namespace Kaleidoscope {
 class Parser {
+public: 
     static int CurTok;
     static std::map<char, int> BinopPrec;
     static int getNextToken();
@@ -17,6 +18,9 @@ class Parser {
     static std::unique_ptr<ExprAST> ParseExpr();
     static std::unique_ptr<ExprAST> ParsePrimary();
     static std::unique_ptr<ExprAST> ParseBinOpRHS(int, std::unique_ptr<ExprAST>);
+    //---------------------------------------------------------
+    static std::unique_ptr<PrototypeAST> ParseProto();
+    static std::unique_ptr<FuncAST> ParseDef();
     //---------------------------------------------------------
     static std::unique_ptr<ExprAST> ParseNumberExpr();
     static std::unique_ptr<ExprAST> ParseParenExpr();

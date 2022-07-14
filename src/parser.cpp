@@ -10,6 +10,7 @@ namespace  Kaleidoscope {
     int Parser::getNextToken() {
         return gettok();
     }
+
     //---------------------------------------------------------
     std::unique_ptr<ExprAST> Parser::LogError(const char *Str) {
         fprintf(stderr, "LogError: %s\n", Str);
@@ -38,6 +39,7 @@ namespace  Kaleidoscope {
         BinopPrec['%'] = 40;
         BinopPrec['/'] = 40; 
     }
+
     //---------------------------------------------------------
     std::unique_ptr<ExprAST> Parser::ParseExpr() {
         auto LHS = ParsePrimary();
@@ -64,11 +66,37 @@ namespace  Kaleidoscope {
         while(1) {
             int TokPrec = GetTokPrec();
             if (TokPrec < ExprPrec) {
-            return LHS;
+                return LHS;
             }
+            int BinOp = CurTok;
+            getNextToken();
+            auto RHS = ParsePrimary();
+            if (!RHS) {
+                return nullptr;
+            }
+            int NextPrec = GetTokPrec();
+            if (TokPrec < NextPrec) {
+                RHS = ParseBinOpRHS(TokPrec + 1, std::move(RHS));
+                if (!RHS) {
+                    return nullptr;
+                }
+            } 
+            LHS = std::make_unique<BinExprAST>(BinOp, std::move(LHS), std::move(RHS));
         }    
     }
+
     //---------------------------------------------------------
+
+    std::unique_ptr<PrototypeAST>  Parser::ParseProto() {
+        
+    }
+    
+    std::unique_ptr<FuncAST> Parser::ParseDef() {
+
+    }
+
+    //---------------------------------------------------------
+
     std::unique_ptr<ExprAST> Parser::ParseNumberExpr() {
         auto Result = std::make_unique<NumExprAST>(NumVal);
         getNextToken();
