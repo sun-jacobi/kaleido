@@ -7,7 +7,9 @@ class Parser {
 public: 
     static int CurTok;
     static std::map<char, int> BinopPrec;
-    static int getNextToken();
+    Parser();
+    //---------------------------------------------------------
+    static int getNextToken();  
     //---------------------------------------------------------
     static std::unique_ptr<ExprAST> LogError(const char *Str);
     static std::unique_ptr<PrototypeAST> LogErrorP(const char *Str);
@@ -21,6 +23,8 @@ public:
     //---------------------------------------------------------
     static std::unique_ptr<PrototypeAST> ParseProto();
     static std::unique_ptr<FuncAST> ParseDef();
+    static std::unique_ptr<PrototypeAST> ParseExtern();
+    static std::unique_ptr<FuncAST> ParseTop();
     //---------------------------------------------------------
     static std::unique_ptr<ExprAST> ParseNumberExpr();
     static std::unique_ptr<ExprAST> ParseParenExpr();

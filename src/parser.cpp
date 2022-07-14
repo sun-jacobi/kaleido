@@ -7,10 +7,13 @@
 
 namespace  Kaleidoscope {
 
+    Parser::Parser() {
+        SetTokPrec();
+    }
+    //---------------------------------------------------------
     int Parser::getNextToken() {
         return gettok();
     }
-
     //---------------------------------------------------------
     std::unique_ptr<ExprAST> Parser::LogError(const char *Str) {
         fprintf(stderr, "LogError: %s\n", Str);
@@ -88,11 +91,47 @@ namespace  Kaleidoscope {
     //---------------------------------------------------------
 
     std::unique_ptr<PrototypeAST>  Parser::ParseProto() {
+        if (CurTok != tok_id) {
+            return LogErrorP("Expected function name in prototype");
+        }
+        std::string FnName = IdentifierStr;
+        getNextToken();
+        if (CurTok != '(') {
+            return LogErrorP("Expected '(' in prototype");
+        }
+        std::vector<std::string> Args;
+        while(getNextToken() == tok_id) {
+            Args.push_back(IdentifierStr);
+        }
+        if (CurTok != ')') {
+            return LogErrorP("Expected ')' in prototype");
+        }
+        getNextToken();
+        return std::make_unique<PrototypeAST>(FnName, std::move(Args));
         
     }
     
     std::unique_ptr<FuncAST> Parser::ParseDef() {
-
+        getNextToken();
+        auto Proto = ParseProto();
+        if (!Proto) {
+            return nullptr;
+        }
+        if (auto E = ParseExpr()) {
+            return std::make_unique<FuncAST>(std::move(Proto), std::move(E));
+        }
+        return nullptr;
+    }
+    std::unique_ptr<PrototypeAST> Parser::ParseExtern() {
+        getNextToken();
+        return ParseProto();
+    } 
+    std::unique_ptr<FuncAST> Parser::ParseTop() {
+        if (auto E = ParseExpr()) {
+            auto Proto = std::make_unique<PrototypeAST>("", std::vector<std::string>());
+            return std::make_unique<FuncAST>(std::move(Proto), std::move(E));
+        }
+        return nullptr;
     }
 
     //---------------------------------------------------------
