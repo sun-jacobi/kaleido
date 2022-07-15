@@ -1,6 +1,6 @@
 #include "ast.hpp"
 
-namespace Kaleidoscope{
+namespace Kaleidoscope {
 
 NumExprAST::NumExprAST(double Val) : Val(Val) {}
 

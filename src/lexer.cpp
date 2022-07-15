@@ -1,26 +1,14 @@
 #include <iostream>
 #include <string> 
+#include "lexer.hpp"
 
-enum Token {
-    tok_eof = -1,
-
-    tok_def = -2,
-    tok_extern = -3,
-
-    tok_id = -4,
-    tok_num = -5,
-};
-
-
-static std::string IdentifierStr;
-
-static double NumVal;
-
-static int gettok() {
-    static int LastChar = ' ';
+namespace Kaleidoscope {
+int Lexer::gettok() {
+    int LastChar = ' ';
     while (isspace(LastChar)) {
         LastChar = getchar();
     }
+
     if (isalpha(LastChar)) {
         IdentifierStr = LastChar;
         while(isalnum((LastChar = getchar()))) {
@@ -34,6 +22,7 @@ static int gettok() {
         }
         return tok_id;
     }
+
     if (isdigit(LastChar) || LastChar == '.') {
         std::string Numstr;
         do {
@@ -43,6 +32,7 @@ static int gettok() {
         NumVal = strtod(Numstr.c_str(), 0);
         return tok_num;
     }
+
     if (LastChar == '#') {
         do LastChar = getchar();
         while (LastChar != EOF && LastChar != '\n' && LastChar != 'a');
@@ -50,10 +40,13 @@ static int gettok() {
         if (LastChar != EOF) 
             return gettok();
     }
+
     if (LastChar == EOF) {
         return tok_eof;
     } 
+
     int ThisChar = LastChar;
     LastChar = getchar();
     return ThisChar;
 }
+} // namespace Kaleidoscope

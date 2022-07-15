@@ -1,34 +1,37 @@
 #include <map>
 #include <memory>
 #include "ast.hpp"
+#include "lexer.hpp"
 
 namespace Kaleidoscope {
 class Parser {
 public: 
-    static int CurTok;
-    static std::map<char, int> BinopPrec;
+    int CurTok;
+    std::map<char, int> BinopPrec;
+    std::unique_ptr<Lexer> lexer;
     Parser();
+    ~Parser() = default;
     //---------------------------------------------------------
-    static int getNextToken();  
+    int getNextToken();  
     //---------------------------------------------------------
-    static std::unique_ptr<ExprAST> LogError(const char *Str);
-    static std::unique_ptr<PrototypeAST> LogErrorP(const char *Str);
+    std::unique_ptr<ExprAST> LogError(const char *Str);
+    std::unique_ptr<PrototypeAST> LogErrorP(const char *Str);
     //---------------------------------------------------------
-    static int GetTokPrec();
-    static void SetTokPrec();
+    int GetTokPrec();
+    void SetTokPrec();
     //---------------------------------------------------------
-    static std::unique_ptr<ExprAST> ParseExpr();
-    static std::unique_ptr<ExprAST> ParsePrimary();
-    static std::unique_ptr<ExprAST> ParseBinOpRHS(int, std::unique_ptr<ExprAST>);
+    std::unique_ptr<ExprAST> ParseExpr();
+    std::unique_ptr<ExprAST> ParsePrimary();
+    std::unique_ptr<ExprAST> ParseBinOpRHS(int, std::unique_ptr<ExprAST>);
     //---------------------------------------------------------
-    static std::unique_ptr<PrototypeAST> ParseProto();
-    static std::unique_ptr<FuncAST> ParseDef();
-    static std::unique_ptr<PrototypeAST> ParseExtern();
-    static std::unique_ptr<FuncAST> ParseTop();
+    std::unique_ptr<PrototypeAST> ParseProto();
+    std::unique_ptr<FuncAST> ParseDef();
+    std::unique_ptr<PrototypeAST> ParseExtern();
+    std::unique_ptr<FuncAST> ParseTop();
     //---------------------------------------------------------
-    static std::unique_ptr<ExprAST> ParseNumberExpr();
-    static std::unique_ptr<ExprAST> ParseParenExpr();
-    static std::unique_ptr<ExprAST> ParseIdentifierExpr();
+    std::unique_ptr<ExprAST> ParseNumberExpr();
+    std::unique_ptr<ExprAST> ParseParenExpr();
+    std::unique_ptr<ExprAST> ParseIdentifierExpr();
 };
 
 } // namespace Kaleidoscope

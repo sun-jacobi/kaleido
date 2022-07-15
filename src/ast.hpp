@@ -8,8 +8,6 @@ public :
     ExprAST() = default;
     virtual ~ExprAST() = default;
 };
-
-
 class NumExprAST : public ExprAST {
     double Val;
 

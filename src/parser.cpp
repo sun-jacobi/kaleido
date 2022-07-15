@@ -1,18 +1,18 @@
 #include <cstdio>
 #include <vector>
 #include "parser.hpp"
-#include "lexer.cpp"
 #include "ast.hpp"
 
 
 namespace  Kaleidoscope {
 
-    Parser::Parser() {
+    Parser::Parser():CurTok(0),BinopPrec() {
+        lexer = std::make_unique<Lexer>();
         SetTokPrec();
     }
     //---------------------------------------------------------
-    int Parser::getNextToken() {
-        return gettok();
+    int Parser::getNextToken()  {
+        return lexer->gettok();
     }
     //---------------------------------------------------------
     std::unique_ptr<ExprAST> Parser::LogError(const char *Str) {
@@ -94,14 +94,14 @@ namespace  Kaleidoscope {
         if (CurTok != tok_id) {
             return LogErrorP("Expected function name in prototype");
         }
-        std::string FnName = IdentifierStr;
+        std::string FnName = lexer->IdentifierStr;
         getNextToken();
         if (CurTok != '(') {
             return LogErrorP("Expected '(' in prototype");
         }
         std::vector<std::string> Args;
         while(getNextToken() == tok_id) {
-            Args.push_back(IdentifierStr);
+            Args.push_back(lexer->IdentifierStr);
         }
         if (CurTok != ')') {
             return LogErrorP("Expected ')' in prototype");
@@ -137,7 +137,7 @@ namespace  Kaleidoscope {
     //---------------------------------------------------------
 
     std::unique_ptr<ExprAST> Parser::ParseNumberExpr() {
-        auto Result = std::make_unique<NumExprAST>(NumVal);
+        auto Result = std::make_unique<NumExprAST>(lexer->NumVal);
         getNextToken();
         return std::move(Result);
     }
@@ -156,7 +156,7 @@ namespace  Kaleidoscope {
     }
 
     std::unique_ptr<ExprAST> Parser::ParseIdentifierExpr() {
-        std::string id = IdentifierStr;
+        std::string id = lexer->IdentifierStr;
         getNextToken();
         if (CurTok != '(') {
             return std::make_unique<VarExprAST>(id);
