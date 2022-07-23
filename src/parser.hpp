@@ -3,6 +3,9 @@
 #include "ast.hpp"
 #include "lexer.hpp"
 
+#ifndef PARSER_H
+#define PARSER_H
+
 namespace Kaleidoscope {
 class Parser {
 public: 
@@ -35,3 +38,6 @@ public:
 };
 
 } // namespace Kaleidoscope
+
+
+#endif

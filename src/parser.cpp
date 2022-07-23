@@ -1,7 +1,6 @@
 #include <cstdio>
 #include <vector>
 #include "parser.hpp"
-#include "ast.hpp"
 
 
 namespace  Kaleidoscope {
