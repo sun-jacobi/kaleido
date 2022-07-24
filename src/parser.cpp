@@ -2,7 +2,6 @@
 #include <vector>
 #include "parser.hpp"
 
-
 namespace  Kaleidoscope {
 
     Parser::Parser():CurTok(0),BinopPrec() {
@@ -11,7 +10,7 @@ namespace  Kaleidoscope {
     }
     //---------------------------------------------------------
     int Parser::getNextToken()  {
-        return lexer->gettok();
+        return CurTok = lexer->gettok();
     }
     //---------------------------------------------------------
     std::unique_ptr<ExprAST> Parser::LogError(const char *Str) {
@@ -60,8 +59,8 @@ namespace  Kaleidoscope {
             case '(': 
                 return ParseParenExpr();
             default:
-                fprintf(stderr, "%d", CurTok);
-                return LogError("Parser::ParsePrimary");
+                fprintf(stderr, "%d\n", CurTok);
+                return LogError("Error:unknown token when expecting an expression");
         }
     }
     std::unique_ptr<ExprAST> Parser::ParseBinOpRHS(int ExprPrec, 

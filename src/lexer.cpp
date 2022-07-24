@@ -3,12 +3,19 @@
 #include "lexer.hpp"
 
 namespace Kaleidoscope {
+
+
+Lexer::Lexer() {
+    LastChar = ' ';
+    NumVal = 0;
+    IdentifierStr = "";
+}
+
+
 int Lexer::gettok() {
-    int LastChar = ' ';
     while (isspace(LastChar)) {
         LastChar = getchar();
     }
-
     if (isalpha(LastChar)) {
         IdentifierStr = LastChar;
         while(isalnum((LastChar = getchar()))) {
@@ -49,4 +56,5 @@ int Lexer::gettok() {
     LastChar = getchar();
     return ThisChar;
 }
+
 } // namespace Kaleidoscope

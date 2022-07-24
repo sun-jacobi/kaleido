@@ -16,9 +16,9 @@ class Lexer {
 public:
     std::string IdentifierStr;  
     double NumVal;
-    int LastChar = ' ';
+    int LastChar;
     int gettok(); 
-    Lexer() = default;
+    Lexer();
     ~Lexer() = default;
 };
 

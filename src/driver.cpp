@@ -3,6 +3,8 @@
 namespace Kaleidoscope {
     Driver::Driver() : parser() {}
     void Driver::Run() {
+        fprintf(stderr, "kaleido>");
+        parser.getNextToken();
         while(true) {
             fprintf(stderr, "kaleido>");
             switch(parser.CurTok) {
@@ -25,21 +27,21 @@ namespace Kaleidoscope {
     }
     void Driver::HandleDef() {
         if (parser.ParseDef()) {
-            fprintf(stderr, "A Function");
+            fprintf(stderr, "A Function\n");
         } else {
             parser.getNextToken();
         }
     }
     void Driver::HandleExtern() {
         if (parser.ParseExtern()) {
-            fprintf(stderr, "A Prototype");
+            fprintf(stderr, "A Prototype\n");
         } else {
             parser.getNextToken();
         }  
     }
     void Driver::HandleTop() {
         if (parser.ParseTop()) {
-            fprintf(stderr, "A Top Level Expr");
+            fprintf(stderr, "A Top Level Expr\n");
         } else {
             parser.getNextToken();
         }  
