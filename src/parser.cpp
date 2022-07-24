@@ -60,7 +60,8 @@ namespace  Kaleidoscope {
             case '(': 
                 return ParseParenExpr();
             default:
-                return LogError("unknown token when expecting an expression");
+                fprintf(stderr, "%d", CurTok);
+                return LogError("Parser::ParsePrimary");
         }
     }
     std::unique_ptr<ExprAST> Parser::ParseBinOpRHS(int ExprPrec, 
@@ -121,10 +122,14 @@ namespace  Kaleidoscope {
         }
         return nullptr;
     }
+
+
     std::unique_ptr<PrototypeAST> Parser::ParseExtern() {
         getNextToken();
         return ParseProto();
     } 
+
+
     std::unique_ptr<FuncAST> Parser::ParseTop() {
         if (auto E = ParseExpr()) {
             auto Proto = std::make_unique<PrototypeAST>("", std::vector<std::string>());

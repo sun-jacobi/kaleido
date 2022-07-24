@@ -15,17 +15,21 @@ kaleido : $(OBJS)
 
 $S/main.o : $S/driver.hpp 
 	$(CC) -o $S/main.o $(CFLAGS) $S/main.cpp
-$S/driver.o : $S/driver.hpp
+$S/driver.o : $S/driver.hpp $S/driver.cpp $S/parser.hpp
 	$(CC) -o $S/driver.o $(CFLAGS) $S/driver.cpp
-$S/parser.o : $S/parser.hpp
+$S/parser.o : $S/parser.hpp $S/parser.cpp $S/ast.hpp $S/lexer.hpp
 	$(CC) -o $S/parser.o  $(CFLAGS) $S/parser.cpp
-$S/lexer.o : $S/lexer.hpp
+$S/lexer.o : $S/lexer.hpp $S/lexer.cpp $S/ast.hpp
 	$(CC) -o $S/lexer.o $(CFLAGS) $S/lexer.cpp
 $S/ast.o : $S/ast.hpp 
 	$(CC) -o $S/ast.o $(CFLAGS) $S/ast.cpp
 
 
 
-.PHONY : clean 
+.PHONY : clean run 
 clean : 
 	rm kaleido $(OBJS)
+
+run : kaleido
+	./kaleido
+
