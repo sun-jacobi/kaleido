@@ -2,10 +2,6 @@
 #include <vector>
 #include <memory>
 
-#ifndef AST_H
-#define AST_H
-
-
 namespace Kaleidoscope{
 class ExprAST {
 public :
@@ -61,4 +57,3 @@ public:
 } // namespace Kaleidoscope
 
 
-#endif

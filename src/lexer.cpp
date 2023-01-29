@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string> 
-#include "lexer.hpp"
+#include "lexer.h"
 
 namespace Kaleidoscope {
 

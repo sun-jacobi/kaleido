@@ -1,4 +1,5 @@
-#include "ast.hpp"
+#include "ast.h"
+
 
 namespace Kaleidoscope {
 

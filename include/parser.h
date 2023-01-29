@@ -1,10 +1,9 @@
 #include <map>
 #include <memory>
-#include "ast.hpp"
-#include "lexer.hpp"
+#include "ast.h"
+#include "lexer.h"
 
-#ifndef PARSER_H
-#define PARSER_H
+
 
 namespace Kaleidoscope {
 class Parser {
@@ -40,4 +39,3 @@ public:
 } // namespace Kaleidoscope
 
 
-#endif

@@ -1,6 +1,5 @@
+
 #include <string>
-#ifndef LEXER_H
-#define LEXER_H
 
 namespace Kaleidoscope {
 
@@ -23,4 +22,3 @@ public:
 };
 
 } // namespace Kaleidoscope
-#endif
